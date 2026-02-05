@@ -1,0 +1,11 @@
+name,phone,email,company,address,notes,categories
+John Smith,+1-555-123-4567,john.smith@email.com,Acme Corporation,123 Main Street City State 12345,Important client - follow up monthly,business;client
+Jane Doe,+1-555-987-6543,jane.doe@email.com,Tech Solutions,456 Oak Avenue City State 67890,Project manager for Q1 initiatives,business;colleague
+Michael Johnson,+1-555-456-7890,michael.j@gmail.com,Freelancer,789 Pine Road City State 11111,Met at networking event,personal;networking
+Sarah Williams,+1-555-321-0987,sarah.w@company.com,Global Industries,321 Elm Street City State 22222,HR contact for recruitment,business
+Robert Brown,+1-555-654-3210,robert.brown@outlook.com,,555 Cedar Lane City State 33333,Family friend,personal;family
+Emily Davis,+1-555-789-0123,emily.d@startup.io,Startup Inc,888 Maple Drive City State 44444,Investor contact,business;investor
+David Wilson,+1-555-234-5678,david.w@tech.com,Tech Giants,999 Birch Blvd City State 55555,Technical consultant,business;consultant
+Lisa Anderson,+1-555-345-6789,lisa.a@marketing.com,Marketing Pro,111 Spruce Court City State 66666,Marketing partnership,business
+James Taylor,+1-555-456-7891,james.t@finance.com,Finance Corp,222 Walnut Way City State 77777,Financial advisor,business;finance
+Jennifer Martinez,+1-555-567-8901,jen.m@design.com,Creative Studios,333 Cherry Circle City State 88888,UI/UX designer,business;creative

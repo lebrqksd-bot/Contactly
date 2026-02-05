@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Contactly</title>
+    <link rel="icon" type="image/png" href="/assets/image/logo.jpeg" />
+    <link rel="shortcut icon" href="/assets/image/logo.jpeg" />
+    <!-- Load Material Icons for web compatibility -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Preload critical icon fonts from CDN -->
+    <link rel="preload" as="font" type="font/ttf" href="https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf" crossorigin>
+    <link rel="preload" as="font" type="font/ttf" href="https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/MaterialIcons.ttf" crossorigin>
+    <!-- Early interception: Patch fetch immediately before React loads -->
+    <script>
+      // This MUST run immediately before any fetch calls
+      if (!window.__fontInterceptorActive) {
+        window.__fontInterceptorActive = true;
+        const originalFetch = window.fetch;
+        
+        // Known font names to match against
+        const knownFonts = ['MaterialCommunityIcons', 'Ionicons', 'FontAwesome', 'Feather', 'AntDesign', 'Entypo', 'MaterialIcons', 'FontAwesome5_Regular', 'FontAwesome5_Solid', 'FontAwesome5_Brands', 'SimpleLineIcons', 'Octicons', 'Foundation', 'EvilIcons', 'Zocial', 'Fontisto'];
+        
+        window.fetch = function(input, init) {
+          let url = typeof input === 'string' ? input : 
+                    input instanceof URL ? input.toString() : 
+                    input instanceof Request ? input.url : String(input);
+          
+          // Aggressive interception: ANY request to /assets/node_modules/...vector-icons...ttf OR any .ttf with known font names
+          if ((url.includes('vector-icons') || url.includes('/assets/')) && url.includes('.ttf')) {
+            console.log('[Font Interceptor] Caught font request:', url);
+            
+            // Try to find a known font name in the URL
+            let fontName = null;
+            for (const font of knownFonts) {
+              if (url.includes(font)) {
+                fontName = font;
+                break;
+              }
+            }
+            
+            // Fallback: try to extract from URL pattern (handles hash-based names like Entypo.abc123.ttf)
+            if (!fontName) {
+              const fontNameMatch = url.match(/Fonts\/([A-Za-z0-9_]+)(?:\.[a-f0-9]+)?\.ttf/);
+              fontName = fontNameMatch ? fontNameMatch[1] : 'MaterialCommunityIcons';
+            }
+            
+            // Map to CDN URL
+            const cdnUrl = 'https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/' + fontName + '.ttf';
+            console.log('[Font Interceptor] Redirecting ' + fontName + ' to: ' + cdnUrl);
+            
+            return originalFetch(cdnUrl, { 
+              ...init, 
+              mode: 'cors', 
+              credentials: 'omit',
+              cache: 'force-cache'
+            }).catch(function(error) {
+              console.log('[Font Interceptor] CDN failed, trying fallback:', error);
+              return originalFetch(
+                'https://cdn.jsdelivr.net/npm/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/' + fontName + '.ttf',
+                { ...init, mode: 'cors', credentials: 'omit', cache: 'force-cache' }
+              );
+            });
+          }
+          
+          return originalFetch(input, init);
+        };
+      }
+    </script>
+    <!-- Font loader script - MUST run before React bundle -->
+    <script>
+      (function() {
+        'use strict';
+        if (typeof window === 'undefined') return;
+        
+        // Font CDN map with multiple fallbacks
+        const fontCDNMap = {
+          'MaterialCommunityIcons': 'https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf',
+          'Ionicons': 'https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf',
+          'FontAwesome': 'https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/FontAwesome.ttf',
+          'Feather': 'https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/Feather.ttf',
+          'AntDesign': 'https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/AntDesign.ttf',
+          'Entypo': 'https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/Entypo.ttf',
+          'MaterialIcons': 'https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/MaterialIcons.ttf',
+          'FontAwesome5_Regular': 'https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf',
+          'FontAwesome5_Solid': 'https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf',
+          'FontAwesome5_Brands': 'https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf',
+          'SimpleLineIcons': 'https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/SimpleLineIcons.ttf',
+          'Octicons': 'https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/Octicons.ttf',
+          'Foundation': 'https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/Foundation.ttf',
+          'EvilIcons': 'https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/EvilIcons.ttf',
+          'Zocial': 'https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/Zocial.ttf',
+          'Fontisto': 'https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/Fontisto.ttf'
+        };
+        
+        // Override fetch to catch ALL font requests (skip if already overridden by first script)
+        if (!window.__fontFetchOverridden) {
+          window.__fontFetchOverridden = true;
+          const originalFetch = window.fetch;
+          window.fetch = function(input, init) {
+            let url = typeof input === 'string' ? input : 
+                      input instanceof URL ? input.toString() : 
+                      input instanceof Request ? input.url : String(input);
+            
+            // Aggressive check: any .ttf request that might be an icon font
+            if (url.includes('.ttf')) {
+              // Extract font name from URL - check all known fonts
+              for (const fontName in fontCDNMap) {
+                if (url.includes(fontName)) {
+                  console.log('[Font Override] Redirecting ' + fontName + ' to CDN');
+                  return originalFetch(fontCDNMap[fontName], { 
+                    ...init, 
+                    mode: 'cors', 
+                    credentials: 'omit',
+                    cache: 'force-cache'
+                  }).catch(function() {
+                    // Fallback to jsdelivr if unpkg fails
+                    console.log('[Font Override] unpkg failed, trying jsdelivr for ' + fontName);
+                    return originalFetch(
+                      'https://cdn.jsdelivr.net/npm/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/' + fontName + '.ttf',
+                      { ...init, mode: 'cors', credentials: 'omit', cache: 'force-cache' }
+                    );
+                  });
+                }
+              }
+            }
+            
+            // Ignore back-icon image requests
+            if (url.includes('back-icon') && url.includes('.png')) {
+              return Promise.resolve(new Response('', { status: 200, statusText: 'OK' }));
+            }
+            
+            return originalFetch(input, init);
+          };
+        }
+        
+        // Also override XMLHttpRequest for older code paths
+        if (!window.__xhrOverridden) {
+          window.__xhrOverridden = true;
+          const OriginalXHR = window.XMLHttpRequest;
+          window.XMLHttpRequest = function() {
+            const xhr = new OriginalXHR();
+            const originalOpen = xhr.open;
+            xhr.open = function(method, url, ...args) {
+              if (typeof url === 'string' && url.includes('.ttf')) {
+                for (const fontName in fontCDNMap) {
+                  if (url.includes(fontName)) {
+                    console.log('[XHR Override] Redirecting ' + fontName + ' to CDN');
+                    url = fontCDNMap[fontName];
+                    break;
+                  }
+                }
+              }
+              return originalOpen.call(this, method, url, ...args);
+            };
+            return xhr;
+          };
+        }
+      })();
+    </script>
+    <!-- MaterialCommunityIcons and all icon fonts fallback -->
+    <style>
+      @font-face {
+        font-family: 'MaterialCommunityIcons';
+        src: url('https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Ionicons';
+        src: url('https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'FontAwesome';
+        src: url('https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/FontAwesome.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Feather';
+        src: url('https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/Feather.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'AntDesign';
+        src: url('https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/AntDesign.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Entypo';
+        src: url('https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/Entypo.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'MaterialIcons';
+        src: url('https://unpkg.com/@expo/vector-icons@14.0.0/build/vendor/react-native-vector-icons/Fonts/MaterialIcons.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      /* Force all icon fonts to use CDN sources */
+      [class*="MaterialCommunityIcons"],
+      [data-icon-family="MaterialCommunityIcons"] {
+        font-family: 'MaterialCommunityIcons' !important;
+      }
+      [class*="Ionicons"],
+      [data-icon-family="Ionicons"] {
+        font-family: 'Ionicons' !important;
+      }
+      [class*="FontAwesome"],
+      [data-icon-family="FontAwesome"] {
+        font-family: 'FontAwesome' !important;
+      }
+      [class*="Feather"],
+      [data-icon-family="Feather"] {
+        font-family: 'Feather' !important;
+      }
+      [class*="AntDesign"],
+      [data-icon-family="AntDesign"] {
+        font-family: 'AntDesign' !important;
+      }
+      [class*="Entypo"],
+      [data-icon-family="Entypo"] {
+        font-family: 'Entypo' !important;
+      }
+      [class*="MaterialIcons"],
+      [data-icon-family="MaterialIcons"] {
+        font-family: 'MaterialIcons' !important;
+      }
+    </style>
+    <!-- The `react-native-web` recommended style reset -->
+    <style id="expo-reset">
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        overflow: hidden;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      #root {
+        display: flex;
+        height: 100%;
+        flex: 1;
+      }
+      /* Remove default input outlines on web */
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none !important;
+        box-shadow: none !important;
+      }
+      /* Ensure all icon elements use MaterialCommunityIcons font */
+      [class*="MaterialCommunityIcons"],
+      [data-icon-family="MaterialCommunityIcons"] {
+        font-family: 'MaterialCommunityIcons' !important;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <div id="root"></div>
+  </body>
+</html>
