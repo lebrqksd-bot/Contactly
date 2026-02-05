@@ -36,6 +36,7 @@
     }
   ],
   "outputDirectory": "dist",
+  // ...existing code...
   "rewrites": [
     { "source": "/assets/node_modules/@expo-google-fonts/poppins/400Regular/(.*)", "destination": "https://fonts.gstatic.com/s/poppins/v21/pxiEyp8kv8JHgFVrFJA.ttf" },
     { "source": "/assets/node_modules/@expo-google-fonts/poppins/500Medium/(.*)", "destination": "https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLGT9V1s.ttf" },
