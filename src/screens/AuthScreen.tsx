@@ -188,12 +188,13 @@ export default function AuthScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
+      style={[styles.container, { backgroundColor: theme.colors.background.default }]}
     >
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
+        style={{ backgroundColor: theme.colors.background.default }}
       >
         <View style={styles.content}>
           <Animated.View entering={FadeIn.duration(theme.animation.duration.normal)} style={styles.logoContainer}>
